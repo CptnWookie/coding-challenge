@@ -1,12 +1,14 @@
 const express = require('express');
+const cors = require('cors');
 const bodyParser = require('body-parser');
 
 const app = express();
 
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  next();
-});
+app.use(cors())
+
+app.listen(80, function () {
+  console.log('CORS-enabled web server listening on port 80')
+})
 
 // parse requests of content-type: application/json
 app.use(bodyParser.json());
