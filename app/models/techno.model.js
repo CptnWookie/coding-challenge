@@ -7,6 +7,7 @@ const Techno = function(techno) {
     this.ninja = techno.ninja;
     this.active = techno.active;
 };
+
 Techno.getAll = result => {
     sql.query("SELECT * FROM techno", (err, res) => {
       if (err) {

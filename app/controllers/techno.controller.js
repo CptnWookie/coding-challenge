@@ -1,4 +1,3 @@
-const Validator = require('fastest-validator');
 const Techno = require("../models/techno.model.js");
 const sql = require("../models/db.js");
 
@@ -35,9 +34,7 @@ exports.findAll = (req, res) => {
           message: "No match found."
         });
       }
-   
     });
-
   };
 
   function getByBuzzFunc(providedBuzz, callback) {
@@ -81,7 +78,7 @@ exports.findAll = (req, res) => {
           }
         }
       }
-        callback(responseString);
+      callback(responseString);
    
     });
   }
