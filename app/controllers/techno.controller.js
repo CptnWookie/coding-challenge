@@ -1,3 +1,4 @@
+const Validator = require('fastest-validator');
 const Techno = require("../models/techno.model.js");
 const sql = require("../models/db.js");
 
@@ -20,36 +21,67 @@ exports.findOne = (req, res) => {
 
 // Retrieve all Technos from the database.
 exports.findAll = (req, res) => {
-    // Techno.getAll((err, data) => {
-    //   if (err)
-    //     res.status(500).send({
-    //       message:
-    //         err.message || "Some error occurred while retrieving technos."
-    //     });
-    //   else res.send(data);
-    // });
-
     var querybuzzwords = req.query.x;
     var wordArray = querybuzzwords.split(",");
-    var ninjaArray = new Array();
 
-    for (i=0; i<wordArray.length; i++){
-     // QUERY DB POUR CHAQUE VALEUR wordArray[i]
-     var result = getByBuzzFunc(wordArray[i]);
-     //console.log(result);
+    getNinjaWords(wordArray, function(ninjaString) {
+      if (ninjaString != null  && ninjaString != ""){
+        res.status(200).send({
+          message: ninjaString
+        });
+      }
+      else{
+        res.status(404).send({
+          message: "No match found."
+        });
+      }
+   
+    });
 
+  };
+
+  function getByBuzzFunc(providedBuzz, callback) {
+     sql.query(`SELECT ninja FROM techno WHERE buzz in (${providedBuzz})`, function (err, result) {
+      if (err) result = new Array();
+
+      callback(result);
+    });
+  }
+
+  function getNinjaWords(providedWordArray, callback) {
+    var sqlConditionString = "";
+
+    if (providedWordArray.length == 1){
+      sqlConditionString = providedWordArray[0];
+    }
+    else{
+      for (i=0; i<providedWordArray.length; i++){
+        if (i < providedWordArray.length - 1){
+          sqlConditionString = sqlConditionString + "'" + providedWordArray[i] + "'" + ",";
+        }
+        else {
+          sqlConditionString = sqlConditionString + "'" + providedWordArray[i] + "'";
+        }
+      }
     }
 
-    res.status(200).send({
-              message: "Value: " + querybuzzwords
-            });
-  };
-  function getByBuzzFunc(providedBuzz) {
-     var test = sql.query(`SELECT ninja FROM techno WHERE buzz = "${providedBuzz}"`, function (err, result, fields) {
-      if (err) throw err;
-      console.log(result[0].ninja);
-      return result[0].ninja
-    });
-    console.log(test)
+    getByBuzzFunc(sqlConditionString, function(returnedNinjaArray) {
+      var responseString = "";
 
+      if (returnedNinjaArray.length == 1){
+        responseString = returnedNinjaArray[0];
+      }
+      else{
+        for (i=0; i<returnedNinjaArray.length; i++){
+          if (i < returnedNinjaArray.length - 1){
+            responseString = responseString + returnedNinjaArray[i].ninja + " ";
+          }
+          else{
+            responseString = responseString + returnedNinjaArray[i].ninja;
+          }
+        }
+      }
+        callback(responseString);
+   
+    });
   }

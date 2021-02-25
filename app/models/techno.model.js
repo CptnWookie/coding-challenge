@@ -7,6 +7,18 @@ const Techno = function(techno) {
     this.ninja = techno.ninja;
     this.active = techno.active;
 };
+Techno.getAll = result => {
+    sql.query("SELECT * FROM techno", (err, res) => {
+      if (err) {
+        console.log("error: ", err);
+        result(null, err);
+        return;
+      }
+  
+      console.log("technos: ", res);
+      result(null, res);
+    });
+  };
 
 Techno.findById = (technoId, result) => {
   sql.query(`SELECT * FROM techno WHERE id = "${technoId}"`, (err, res) => {
@@ -46,17 +58,5 @@ Techno.getByBuzz = (providedBuzz, result) => {
   });
 }
 
-Techno.getAll = result => {
-    sql.query("SELECT * FROM techno", (err, res) => {
-      if (err) {
-        console.log("error: ", err);
-        result(null, err);
-        return;
-      }
-  
-      console.log("technos: ", res);
-      result(null, res);
-    });
-  };
 
 module.exports = Techno;
