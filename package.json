@@ -4,9 +4,11 @@
   "description": "(inspired by: https://github.com/coveo/backend-coding-challenge)",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js --exec babel-node --presets babel-preset-env",
-    "lint": "eslint src/js"
+    "start-dev": "nodemon index.js",
+    "migrate": "npx sequelize-cli db:migrate",
+    "migrate:reset": "npx sequelize-cli db:migrate:undo:all && npm run migrate",
+    "test": "cross-env NODE_ENV=test jest --testTimeout=10000",
+    "pretest": "cross-env NODE_ENV=test npm run migrate:reset"
   },
   "repository": {
     "type": "git",
@@ -25,12 +27,20 @@
     "express": "^4.17.1",
     "fastest-validator": "^1.10.0",
     "hbs": "^4.1.1",
+    "mongoose": "^5.11.18",
     "mysql": "^2.18.1",
     "serve": "^11.3.2",
     "split-string": "^6.1.0",
     "validatorjs": "^3.22.1"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "jest": "^26.6.3"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ]
   }
 }

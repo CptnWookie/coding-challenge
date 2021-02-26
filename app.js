@@ -17,3 +17,5 @@ app.use('/ninjify', (req, res) => {
 app.use('/', (req, res) => {
     return res.render('index');
 });
+
+module.exports = app
